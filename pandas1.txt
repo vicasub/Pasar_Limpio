@@ -1,0 +1,198 @@
+# pandas1
+# aquest document recull exemples bàsics per treballar amb dataframes
+de pandas
+
+# suposem que tenim un fitxer csv d'estructura.
+
+GRAU,CODEX,SEX,CP_FAM,ANY,TACCES,VACCES,SELE,CPCENTRE
+752,277551,H,08328,2013,1,0,12.042,08328
+752,244848,H,25790,2011,1,0,11.39,25280
+752,245234,H,08017,2011,1,0,10.24,08017
+752,227703,D,08037,2010,1,0,10.586,08010
+752,245776,H,08019,2011,1,0,9.774,08009
+752,228122,H,08001,2010,1,0,9.772,08034
+752,245810,H,08506,2011,1,0,11.4,08500
+752,244262,H,43500,2011,1,0,10.264,43500
+752,244287,H,43500,2011,1,0,11.204,43500
+752,244289,H,43850,2011,1,0,12.008,43850
+752,244235,H,43205,2011,1,0,12.33,43205
+752,294152,H,08172,2014,1,0,12.014,08173
+752,227686,H,08902,2010,1,0,10.076,08014
+
+
+# crear dataframe des de fitxer csv
+>>> import pandas as pd
+
+# carreguem del fitxer
+>>> dpers = pd.read_csv('estudiantsIND2016.csv')
+
+# mostrar info columnes i tipus
+>>> dpers.dtypes
+CODEX         int64
+SEX          object
+CP_FAM       object
+ANY           int64
+TACCES        int64
+VACCES        int64
+SELE        float64
+CPCENTRE    float64
+dtype: object
+
+# selecció de columna. En plan dict
+>>> dpers['SELE']
+
+# és euivalent a
+>>> dpers.SELE
+
+# els dataframe admeten llesques (slices) igual que str, list, dict
+
+# sumar una columna
+dpers['SELE'].sum()
+0
+>>> dpers['VACCES'].mean()
+0.0
+>>> dpers['SELE'].mean()
+11.111487891737893
+>>> dpers['SELE'].max()
+14.0
+
+>>> dpers[dpers['VACCES']==0].count()
+CODEX       2808
+SEX         2808
+CP_FAM      2808
+ANY         2808
+TACCES      2808
+VACCES      2808
+SELE        2808
+CPCENTRE    2451
+dtype: int64
+
+# selecció de subconjunt d'una col·lumna
+>>> dpers[dpers['ANY']==2015]['SELE'].mean()
+11.204661572052403
+>>> dpers[dpers['ANY']==2015]['SELE'].max()
+13.76
+
+#màscara múltiple de selecció
+>>> dpers[(dpers.ANY==2010) & (dpers.SEX=='H')]
+
+# es pot definir la màscara com una variable
+>>> mask = (  )&(  )&(  )
+>>> dpers(mask)
+
+# esborrar una col·lumna: es fa com a un diccionari python
+>>> del dpers['VACCES']
+
+# guardar un dataframe en format de pandas. Format binari
+>>> dpers.to_pickle('dfdades2016.pkl')
+
+# guardar un dataframe en format csv (text en ascii)
+>>> dpers.to_csv('dfdades2016.csv')
+
+
+# altres mètodes bàsics amb dataframes
+# s'utilitzen  nomdataframe.funcio()
+Function  Description
+count	    Number of non-null observations
+sum	      Sum of values
+mean      Mean of values
+mad       Mean absolute deviation
+median    Arithmetic median of values
+min       Minimum
+max       Maximum
+mode      Mode
+abs       Absolute Value
+prod      Product of values
+std       Unbiased standard deviation
+var       Unbiased variance
+sem       Unbiased standard error of the mean
+skew      Unbiased skewness (3rd moment)
+kurt      Unbiased kurtosis (4th moment)
+quantile	Sample quantile (value at %)
+cumsum    Cumulative sum
+cumprod   Cumulative product
+cummax    Cumulative maximum
+cummin    Cumulative minimum
+#
+
+# exemple: quants estudiant del 2015 tenen nota de SELE superior a 12
+# copiem sobre un nou df la nota de 'SELE' dels de 2015
+>>> dsele2015= dpers[dpers['ANY']==2015]['SELE']
+# amb el nou df comptem quants tenen nota superior a 12.0
+>>> dsele2015[dsele2015[:]>12.0].count()
+112
+
+#consulta de dades estadístiques bàsiques del df de notes de 'SELE' de 2015
+>>> dsele2015.describe()
+count    458.000000
+mean      11.204662
+std        1.033134
+min        7.344000
+25%       10.340500
+50%       11.176000
+75%       11.985500
+max       13.760000
+Name: SELE, dtype: float64
+
+# Es pot calcular un histograma en un df segons uns rangs definits per nosaltres
+# amb les dades de la sele i rangs podem calcular:
+>>> ranges = [9, 11, 12, 14]
+>>> dsele2015.groupby(pd.cut(dsele2015,ranges)).count()
+SELE
+(9, 11]     203
+(11, 12]    141
+(12, 14]    112
+dtype: int64
+
+# o millor sobre el df original
+>>> dpers[dpers['ANY']==2015]['SELE'].groupby(pd.cut( dpers[dpers['ANY']==2015]['SELE'],ranges)).count()
+SELE
+(9, 11]     203
+(11, 12]    141
+(12, 14]    112
+dtype: int64
+
+>>> dpers[dpers['ANY']==2014]['SELE'].groupby(pd.cut( dpers[dpers['ANY']==2014]['SELE'],ranges)).count()
+SELE
+(9, 11]     242
+(11, 12]    153
+(12, 14]     94
+dtype: int64
+
+
+# filtrat múltiple de dades
+>>> q = info[(info['CURS']==2014) & (info['Q']==1)&(info['APR']=='N')]
+
+# nou df amb només unes cols
+>>> convAL = df.loc[:,['ANY','NAL','NC1','NMF','NQ1','NFI']]
+
+# selec una col
+>>> df[df['NFI']!=-1].sum().NFI
+o
+>>> df[df['NFI']!=-1].sum()[NFI]
+
+#acces a files. Una sola col
+>>> print(df.ix[:10]['CODEX'])
+
+>>> convq1.sum()['NAL']
+
+
+
+Using & operator, don't forget to wrap the sub-statements with ():
+
+males = df[(df[Gender]=='Male') & (df[Year]==2014)]
+To store your dataframes in a dict using a for loop:
+
+from collections import defaultdict
+dic={}
+for g in ['male', 'female']:
+  dic[g]=defaultdict(dict)
+  for y in [2013, 2014]:
+    dic[g][y]=df[(df[Gender]==g) & (df[Year]==y)] #store the DataFrames to a dict of dict
+EDIT:
+A demo for your getDF:
+
+def getDF(dic, gender, year):
+  return dic[gender][year]
+
+print genDF(dic, 'male', 2014)
